@@ -4,7 +4,8 @@ CREATE TABLE users (
     uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    is_logged_in BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE tasks (

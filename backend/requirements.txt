@@ -7,3 +7,17 @@ python-jose #[cryptography] - JWT handling
 python-multipart # - for form data
 pydantic #[email] 
 python-dateutil # - date handling
+datetime-5.5
+passlib # - password hashing
+python-jose # - JWT handling
+python-multipart # - for form data
+python-dateutil # - date handling
+cryptography # - encryption
+passlib # - password hashing
+python-jose # - JWT handling
+python-multipart # - for form data
+python-dateutil # - date handling
+cryptography # - encryption
+passlib # - password hashing
+python-jose # - JWT handling
+python-multipart # - for form data
