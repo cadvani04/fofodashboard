@@ -2,9 +2,9 @@
 # Stage 1: Build the Next.js frontend
 FROM node:18-alpine AS frontend-builder
 
-WORKDIR /app/webapp
+WORKDIR /app
 COPY webapp/package*.json ./
-RUN npm ci --only=production
+RUN npm install
 
 COPY webapp/ ./
 RUN npm run build
@@ -29,14 +29,14 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend/ ./backend/
 
 # Copy built frontend from previous stage
-COPY --from=frontend-builder /app/webapp/.next ./webapp/.next
-COPY --from=frontend-builder /app/webapp/public ./webapp/public
-COPY --from=frontend-builder /app/webapp/package*.json ./webapp/
-COPY --from=frontend-builder /app/webapp/next.config.ts ./webapp/
+COPY --from=frontend-builder /app/.next ./webapp/.next
+COPY --from=frontend-builder /app/public ./webapp/public
+COPY --from=frontend-builder /app/package*.json ./webapp/
+COPY --from=frontend-builder /app/next.config.ts ./webapp/
 
 # Install only production dependencies for frontend
 WORKDIR /app/webapp
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 WORKDIR /app
 
