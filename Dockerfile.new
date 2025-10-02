@@ -5,8 +5,8 @@ FROM node:18-alpine AS frontend-builder
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY webapp/package.json ./
-COPY webapp/package-lock.json ./
+COPY webapp/package.json ./package.json
+COPY webapp/package-lock.json ./package-lock.json
 
 # Install dependencies
 RUN npm install
