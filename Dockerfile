@@ -3,7 +3,8 @@
 FROM node:18-alpine AS frontend-builder
 
 WORKDIR /app
-COPY webapp/package*.json ./
+COPY webapp/package.json ./
+COPY webapp/package-lock.json ./
 RUN npm install
 
 COPY webapp/ ./
@@ -31,7 +32,8 @@ COPY backend/ ./backend/
 # Copy built frontend from previous stage
 COPY --from=frontend-builder /app/.next ./webapp/.next
 COPY --from=frontend-builder /app/public ./webapp/public
-COPY --from=frontend-builder /app/package*.json ./webapp/
+COPY --from=frontend-builder /app/package.json ./webapp/
+COPY --from=frontend-builder /app/package-lock.json ./webapp/
 COPY --from=frontend-builder /app/next.config.ts ./webapp/
 
 # Install only production dependencies for frontend
