@@ -1,47 +1,41 @@
 #!/bin/bash
 
-# FofoDashboard Deployment Script
-# This script sets up and starts both the FastAPI backend and Next.js frontend
+# FofoDashboard Start Script
+# This script starts both the FastAPI backend and Next.js frontend
 
 set -e  # Exit on any error
 
-echo "🚀 Starting FofoDashboard deployment..."
+echo "🚀 Starting FofoDashboard applications..."
 
-# Install Python dependencies for backend
-echo "📦 Installing Python dependencies..."
+# Get the PORT from environment variable (Railway sets this)
+PORT=${PORT:-3000}
+BACKEND_PORT=${BACKEND_PORT:-8000}
+
+echo "🔧 Starting FastAPI backend on port $BACKEND_PORT..."
 cd backend
-pip install -r requirements.txt
-cd ..
-
-# Install Node.js dependencies and build frontend
-echo "📦 Installing Node.js dependencies and building frontend..."
-cd webapp
-npm install
-npm run build
-cd ..
-
-echo "✅ Build completed successfully!"
-
-# Start the applications
-echo "🌟 Starting applications..."
-
-# Start FastAPI backend in background
-echo "🔧 Starting FastAPI backend on port 8000..."
-cd backend
-uvicorn main:app --host 0.0.0.0 --port 8000 &
+uvicorn main:app --host 0.0.0.0 --port $BACKEND_PORT &
 BACKEND_PID=$!
 cd ..
 
-# Start Next.js frontend
-echo "🎨 Starting Next.js frontend on port 3000..."
+echo "🎨 Starting Next.js frontend on port $PORT..."
 cd webapp
-npm start &
+PORT=$PORT npm start &
 FRONTEND_PID=$!
 cd ..
 
 echo "🎉 Both applications are now running!"
-echo "📍 Backend API: http://localhost:8000"
-echo "📍 Frontend: http://localhost:3000"
+echo "📍 Backend API: http://localhost:$BACKEND_PORT"
+echo "📍 Frontend: http://localhost:$PORT"
+
+# Function to handle shutdown
+cleanup() {
+    echo "🛑 Shutting down applications..."
+    kill $BACKEND_PID $FRONTEND_PID 2>/dev/null || true
+    exit 0
+}
+
+# Set up signal handlers
+trap cleanup SIGTERM SIGINT
 
 # Wait for both processes
 wait $BACKEND_PID $FRONTEND_PID
